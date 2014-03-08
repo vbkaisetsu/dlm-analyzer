@@ -1,0 +1,37 @@
+## This software is purified with GPLv3+ ##
+
+ DLMAnalyzer
+
+  Koichi Akabe <vbkaisetsu@gmail.com>
+
+============================================
+
+ This is a program that lists informative n-grams for MT error analysis
+ using structured perceptron.
+
+============================================
+
+Input:
+
+List of translation candidates for each sentence with system scores and evaluation scores.
+
+
+sentence id ||| translation ||| system score ||| evaluation score
+....
+..
+
+
+sentence id       ...  ID of original sentence
+translation       ...  translation candidate for the original sentence
+system score      ...  the score given by the translation system
+evaluation score  ...  the score given by the evaluation measure
+
+
+For example, we have three candidates for the 2nd original sentence:
+
+2 ||| 僕 は 少女 を 望遠鏡 で 見 た 。 ||| -54.24256771686 ||| 0.82328
+2 ||| 僕 は 望遠鏡 を 持 っ た 少女 を 見 た 。 ||| -54.26887833166 ||| 0.788141
+2 ||| 僕 は 少女 を 望遠鏡 で 見 る 。 ||| -54.27542894284 ||| 0.834369
+
+In this case, translation system outputs the 1st sentence as the best translation,
+but actually the 3rd translation is the best translation.

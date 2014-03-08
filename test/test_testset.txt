@@ -1,0 +1,4 @@
+0 ||| i saw a doll with a telescope . ||| -1 ||| 1
+0 ||| i saw a doll with the telescope . ||| -2 ||| 2
+1 ||| she saw a doll using a telescope . ||| -1 ||| 1
+1 ||| he saw a doll using a telescope . ||| -2 ||| 2
