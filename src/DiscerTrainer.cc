@@ -10,8 +10,6 @@
 #include <cfloat>
 #include <boost/algorithm/string.hpp>
 
-DEFINE_bool(baseline, false, "baseline !!! eta=0, mergin=0, iter=1 !!!");
-
 using namespace std;
 
 namespace DiscerLangModel

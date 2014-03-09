@@ -30,7 +30,8 @@ DEFINE_int32(iter, 100, "number of iteration");
 DEFINE_double(mergin, 0.0, "mergin level");
 DEFINE_int32(ngramsize, 3, "ngram size (MAX: 5)");
 DEFINE_bool(badaverages, false, "show trained scores");
-//DEFINE_bool(baseline, false, "baseline !!! eta=0, mergin=0, iter=1 !!!");
+
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -38,35 +39,35 @@ int main(int argc, char **argv)
 
 	if(FLAGS_modeldata == "" && FLAGS_testdata == "")
 	{
-		std::cerr << "Please specify model file or test file." << std::endl;
+		cerr << "Please specify model file or test file." << endl;
 	}
 
 	DiscerLangModel::Model model(FLAGS_ngramsize);
 	DiscerLangModel::DiscerTrainer trainer(&model);
-	std::cerr << "Loading ..." << std::endl;
+	cerr << "Loading ..." << endl;
 	trainer.load_data(FLAGS_traindata);
-	std::cerr << "Training ..." << std::endl;
+	cerr << "Training ..." << endl;
 	trainer.train(FLAGS_iter, FLAGS_mergin, FLAGS_eta);
-	std::cerr << "Training finished." << std::endl;
+	cerr << "Training finished." << endl;
 	if(FLAGS_modeldata != "")
 	{
-		std::cerr << "Saving model data ..." << std::endl;
+		cerr << "Saving model data ..." << endl;
 		model.save_model(FLAGS_modeldata);
 	}
 	if(FLAGS_testdata != "")
 	{
 		DiscerLangModel::DiscerTester tester(&model);
-		std::cerr << "Loading test data ..." << std::endl;
+		cerr << "Loading test data ..." << endl;
 		tester.load_data(FLAGS_testdata);
-		std::cerr << "Calcurating score ..." << std::endl << std::endl;
+		cerr << "Calcurating score ..." << endl << endl;
 		if(FLAGS_badaverages)
 		{
-			std::vector<double> scores = tester.get_onebest_bad_averages();
-			std::vector<double>::iterator it;
+			vector<double> scores = tester.get_onebest_bad_averages();
+			vector<double>::iterator it;
 			int i = 0;
 			for(it = scores.begin(); it != scores.end(); ++it)
 			{
-				std::cout << i << " " << *it << std::endl;
+				cout << i << " " << *it << endl;
 				++i;
 			}
 		}
@@ -74,11 +75,11 @@ int main(int argc, char **argv)
 		{
 			double before = tester.eval_no_model();
 			double after = tester.eval();
-			std::cout << "eta: " << FLAGS_eta << " ; " << before << " -> " << after << std::endl;
+			cout << "eta: " << FLAGS_eta << " ; " << before << " -> " << after << endl;
 		}
-		std::cerr << std::endl;
+		cerr << endl;
 	}
 
-	std::cerr << "Finished." << std::endl;
+	cerr << "Finished." << endl;
 	return 0;
 }
