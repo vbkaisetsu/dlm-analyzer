@@ -28,7 +28,7 @@ src_file.close()
 
 for line in trg_file:
 	trg_ref.append(line.strip())
-trg_file.clsoe()
+trg_file.close()
 
 for i, line in enumerate(seed_file):
 	spl = line.split(" ||| ")
