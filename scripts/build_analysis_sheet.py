@@ -1,24 +1,39 @@
 #!/usr/bin/python3
 
-import sys
+import argparse
 from collections import defaultdict
 
-en_file = open(sys.argv[1], "r")
-ja_file = open(sys.argv[2], "r")
-map_file = open(sys.argv[3], "w")
+parser = argparse.ArgumentParser()
+
+parser.add_argument("orig", help="original sentences")
+parser.add_argument("trg_refs", help="translation references")
+parser.add_argument("order_map", help="path to the map data to revert ordering")
+parser.add_argument("seed", help="seed file for building the evaluation sheet")
+
+args = parser.parse_args()
+
+org_file = open(args.orig, "r")
+trg_file = open(args.trg_refs, "r")
+map_file = open(args.order_map, "w")
+seed_file = open(args.seed, "r")
 
 order_map = defaultdict(lambda : [])
 
-en_ref = []
-ja_ref = []
-for line in en_file:
-	en_ref.append(line.strip())
-for line in ja_file:
-	ja_ref.append(line.strip())
+org_ref = []
+trg_ref = []
 
-for i, line in enumerate(sys.stdin):
+for line in org_file:
+	org_ref.append(line.strip())
+org_file.close()
+
+for line in trg_file:
+	trg_ref.append(line.strip())
+trg_file.clsoe()
+
+for i, line in enumerate(seed_file):
 	spl = line.split(" ||| ")
 	order_map[(int(spl[1]), spl[2].strip())].append(i)
+seed_file.close()
 
 print("""
 <!DOCTYPE html>
@@ -133,10 +148,12 @@ for i, ((sid, s), r) in enumerate(sorted(order_map.items(), key=lambda x: x[0][0
 			<td>Target MT:</td>
 			<td>%s</td>
 		</tr>
-	</table>""" %(sid, i, en_ref[sid], ja_ref[sid], s))
+	</table>""" %(sid, i, org_ref[sid], trg_ref[sid], s))
 	print(",".join(str(i) for i in r), file=map_file)
 
 print("""
 </body>
 </html>
 """)
+
+map_file.close()

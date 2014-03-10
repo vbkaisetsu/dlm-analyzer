@@ -1,14 +1,20 @@
 #!/usr/bin/python3
 
-import sys
+import argparse
 from collections import defaultdict
 import random
 
-ngram_size = 3
+parser = argparse.ArgumentParser()
 
-fp1 = open(sys.argv[1], "r") # model
-fp2 = open(sys.argv[2], "r") # system output
-topN = int(sys.argv[3])
+parser.add_argument("model", help="model data generated from dlm-train")
+parser.add_argument("translations", help="one-best translations")
+parser.add_argument("top_K", help="use K-best erroneous n-grams", type=int)
+parser.add_argument("-l", "--limit", help="maximum locations for each n-gram", type=int, default=10)
+
+args = parser.parse_args()
+
+fp1 = open(args.model, "r") # model
+fp2 = open(args.translations, "r") # system output
 
 # =============================================
 #  load model
@@ -53,7 +59,7 @@ rev_wids = {v: k for k, v in wids.items()}
 k = -1
 for ngram, score in ngramweights:
 	k += 1
-	if k == topN:
+	if k == args.top_K:
 		break
 	random.shuffle(systemouts)
 	i = 0
@@ -68,7 +74,7 @@ for ngram, score in ngramweights:
 			finalsent = " ".join(rev_wids[int(wid)] for wid in left_str.split()) + " <span>" + " ".join(rev_wids[int(wid)] for wid in ngram_str.split()) + "</span> " + " ".join(rev_wids[int(wid)] for wid in right_str.split())
 			print(k, "|||", sid, "|||", finalsent)
 			i += 1
-		if i == 10:
+		if i == args.limit:
 			break
 	if i == 0:
 		k -= 1

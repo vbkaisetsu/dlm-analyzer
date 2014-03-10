@@ -1,9 +1,16 @@
 #!/usr/bin/python3
 
-import sys
+import argparse
 
-nbestfile = open(sys.argv[1], "r")
-scorefile = open(sys.argv[2], "r")
+parser = argparse.ArgumentParser()
+
+parser.add_argument("nbest", help="nbest data generated from a MT system")
+parser.add_argument("scores", help="score data for each candidate")
+
+args = parser.parse_args()
+
+nbestfile = open(args.nbest, "r")
+scorefile = open(args.scores, "r")
 
 for line in nbestfile:
 	score = scorefile.readline().split()[0]
