@@ -5,27 +5,42 @@
   Koichi Akabe <vbkaisetsu@gmail.com>
 
 ============================================
-
  このプログラムは、機械翻訳の誤り分析における有用な n-gram を、
  構造化パーセプトロンにより一覧にします。
+============================================
+
+必要環境:
+  開発環境は以下の通りです:
+    Boost (1.49), gflags (2.0), g++ (4.8.2)
+
+ビルド:
+  $ autoreconf -i
+  $ ./configure
+  $ make
+
+  さらに "(sudo) make install" を実行すれば、コンピューターに dlm_train をインストールできます。
+
+識別言語モデルの学習、モデルファイルの生成:
+  $ dlm_train -eta [ETA] -modeldata [MODEL_FILE] -traindata [N-BESTS for training] -testdata [N-BESTS for testing]
+
+評価シートの生成:
+  $ ./scripts/generate_sheet_seed.py [MODEL_FILE] [ONE-BESTS] [NUMBER of n-grams] > SEED
+  $ ./scripts/build_analysis_sheet.py [SOURCE] [TARGET REFS] [ORDER MAP] [SEED] > HTML file
 
 ============================================
 
-入力:
-
+入力データ:
 各文に対する翻訳候補、システムスコア、評価スコアのリスト。
 
-
 sentence id ||| translation ||| system score ||| evaluation score
-....
-..
-
+............
+......
+...
 
 sentence id       ...  原文のID
 translation       ...  原文に対する翻訳の候補
 system score      ...  翻訳機によって与えられたスコア
 evaluation score  ...  評価尺度によって与えられたスコア
-
 
 例えば、2番目の原文に対し、3つの候補があったとします:
 

@@ -5,27 +5,42 @@
   Koichi Akabe <vbkaisetsu@gmail.com>
 
 ============================================
-
  This is a program that lists informative n-grams for MT error analysis
  using structured perceptron.
+============================================
+
+Required:
+  My development environment is:
+    Boost (1.49), gflags (2.0), g++ (4.8.2)
+
+Build:
+  $ autoreconf -i
+  $ ./configure
+  $ make
+
+  Additionaly, you can run "(sudo) make install" to install dlm_train on your computer.
+
+Train discriminative LM and generate the model file:
+  $ dlm_train -eta [ETA] -modeldata [MODEL_FILE] -traindata [N-BESTS for training] -testdata [N-BESTS for testing]
+
+Generate the evaluation sheet:
+  $ ./scripts/generate_sheet_seed.py [MODEL_FILE] [ONE-BESTS] [NUMBER of n-grams] > SEED
+  $ ./scripts/build_analysis_sheet.py [SOURCE] [TARGET REFS] [ORDER MAP] [SEED] > HTML file
 
 ============================================
 
-Input:
-
+Input data:
 List of translation candidates for each sentence with system scores and evaluation scores.
 
-
 sentence id ||| translation ||| system score ||| evaluation score
-....
-..
-
+............
+......
+...
 
 sentence id       ...  ID of original sentence
 translation       ...  translation candidate for the original sentence
 system score      ...  the score given by the translation system
 evaluation score  ...  the score given by the evaluation measure
-
 
 For example, we have three candidates for the 2nd original sentence:
 
