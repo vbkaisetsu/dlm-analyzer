@@ -1,4 +1,4 @@
-SUBDIRS = src test
+SUBDIRS = src scripts test
 
 EXTRA_DIST = \
 	README \

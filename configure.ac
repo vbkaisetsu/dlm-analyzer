@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([smallproject], [0.0.1], [vbkaisetsu@gmail.com])
+AC_INIT([dlm-analyzer], [0.0.1], [vbkaisetsu@gmail.com])
 AC_CONFIG_SRCDIR([src/main.cc])
 AC_CONFIG_HEADERS([config.h])
 
@@ -30,5 +30,6 @@ AC_TYPE_SIZE_T
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+                 scripts/Makefile
                  test/Makefile])
 AC_OUTPUT
