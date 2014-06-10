@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <tuple>
+#include <random>
 
 #include <gflags/gflags.h>
 

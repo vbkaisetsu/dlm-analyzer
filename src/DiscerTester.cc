@@ -59,7 +59,7 @@ void DiscerTester::load_data(string filename)
 	 * 
 	 *   root
 	 *   |- nbest
-	 *   |  + ( ngram ids, length, system score, target score )
+	 *   |  + ( ngram ids, length, system score, eval score )
 	 *   |  + ( ... )
 	 *   |  + ...
 	 *   |
@@ -95,13 +95,13 @@ void DiscerTester::load_data(string filename)
 		// replace words with word ids
 		vector<int> word_ids = model->get_wid_sequence(words);
 
-		double systemscore, targetscore;
+		double systemscore, evalscore;
 		systemscore = atof(splitline[2].c_str());
-		targetscore = atof(splitline[3].c_str());
+		evalscore = atof(splitline[3].c_str());
 
 		vector<int> ngrams = model->get_ngrams(word_ids);
 
-		testdata[nbest_ids[act_nbest_id]].push_back(make_tuple(ngrams, (double)word_ids.size(), systemscore, targetscore));
+		testdata[nbest_ids[act_nbest_id]].push_back(make_tuple(ngrams, (double)word_ids.size(), systemscore, evalscore));
 	}
 }
 

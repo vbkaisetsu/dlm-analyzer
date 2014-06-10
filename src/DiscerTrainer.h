@@ -18,6 +18,9 @@ private:
 
 public:
 	std::vector<nbest> traindata;
+	std::random_device seed_gen;
+	std::default_random_engine random_engine;
+	std::uniform_real_distribution<> zero_one_distribution;
 
 	DiscerTrainer(Model *m);
 	void regularizeL1(int id, int iter, double eta);

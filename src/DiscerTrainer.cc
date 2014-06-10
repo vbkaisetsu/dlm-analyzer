@@ -10,6 +10,9 @@
 #include <cfloat>
 #include <boost/algorithm/string.hpp>
 
+// setup gflags
+DEFINE_bool(shuffletrain, true, "shuffle training data in each iteration");
+
 using namespace std;
 
 namespace DiscerLangModel
@@ -18,6 +21,8 @@ namespace DiscerLangModel
 DiscerTrainer::DiscerTrainer(Model *m)
 {
 	model = m;
+	random_engine = std::default_random_engine(seed_gen());
+	zero_one_distribution = std::uniform_real_distribution<>(0, 1);
 }
 
 double pow_int(double x, unsigned int n)
@@ -84,7 +89,7 @@ void DiscerTrainer::update_weights(scored_candidate &target, scored_candidate &c
 		regularizeL1(*it_ngram_id, iter, eta);
 		model->ngram_weight[*it_ngram_id] -= 1.0;
 	}
-	model->systemscore_weight += get<2>(target) - get<2>(cand);
+	model->evalscore_weight += get<2>(target) - get<2>(cand);
 	model->length_weight += get<1>(target) - get<1>(cand);
 }
 
@@ -98,7 +103,7 @@ void DiscerTrainer::load_data(string filename)
 	 * 
 	 *   root
 	 *   |- nbest
-	 *   |  + ( ngram ids, length, system score, target score )
+	 *   |  + ( ngram ids, length, system score, eval score )
 	 *   |  + ( ... )
 	 *   |  + ...
 	 *   |
@@ -136,20 +141,20 @@ void DiscerTrainer::load_data(string filename)
 		// replace words with word ids
 		vector<int> word_ids = model->get_wid_sequence(words);
 
-		double systemscore, targetscore;
+		double systemscore, evalscore;
 		systemscore = atof(splitline[2].c_str());
-		targetscore = atof(splitline[3].c_str());
+		evalscore = atof(splitline[3].c_str());
 
 		vector<int> ngrams = model->get_ngrams(word_ids);
 
-		// update best score
-		if(target_best_score[nbest_ids[act_nbest_id]] < targetscore)
+		// update oracle
+		if(target_best_score[nbest_ids[act_nbest_id]] < evalscore)
 		{
-			target_best_score[nbest_ids[act_nbest_id]] = targetscore;
+			target_best_score[nbest_ids[act_nbest_id]] = evalscore;
 			target_best_id[nbest_ids[act_nbest_id]] = traindata[nbest_ids[act_nbest_id]].size();
 		}
 
-		traindata[nbest_ids[act_nbest_id]].push_back(make_tuple(ngrams, (double)word_ids.size(), systemscore, targetscore));
+		traindata[nbest_ids[act_nbest_id]].push_back(make_tuple(ngrams, (double)word_ids.size(), systemscore, evalscore));
 	}
 }
 
@@ -169,18 +174,34 @@ void DiscerTrainer::train(unsigned int iter, double merginlevel, double eta)
 	model->length_weight = 0.0;
 	model->systemscore_weight = 1.0;
 	unsigned int i, j, k, iter_total = 0;
+
+	vector<int> randvec;
+	for(i = 0; i < traindata.size(); ++i)
+	{
+		randvec.push_back(i);
+	}
+
+	//ngram_weight_sum.resize(model->ngram_ids.size(), 0.0);
+
 	for(i = 0; i < iter; ++i)
 	{
+		if(FLAGS_shuffletrain)
+		{
+			shuffle(randvec.begin(), randvec.end(), random_engine);
+		}
+
 		for(j = 0; j < traindata.size(); ++j)
 		{
 			double system_best_score = -DBL_MAX, system_best_score2 = -DBL_MAX;
 			int system_best_id = 0, system_best_id2 = 0;
 
-			// get system output
-			for(k = 0; k < traindata[j].size(); ++k)
+			int sentid = randvec[j];
+
+			// get hypothesis
+			for(k = 0; k < traindata[sentid].size(); ++k)
 			{
 				double score;
-				score = calcurate_score(traindata[j][k], iter_total, eta);
+				score = calcurate_score(traindata[sentid][k], iter_total, eta);
 				if(score > system_best_score)
 				{
 					system_best_id2 = system_best_id;
@@ -195,22 +216,22 @@ void DiscerTrainer::train(unsigned int iter, double merginlevel, double eta)
 				}
 			}
 
-			if(target_best_score[j] == get<3>(traindata[j][system_best_id]))
+			if(target_best_score[sentid] == get<2>(traindata[sentid][system_best_id]))
 			{
 				// system output == target output
 				// check mergin
-				double mergin = merginlevel * (target_best_score[j] - get<3>(traindata[j][system_best_id2]));
+				double mergin = merginlevel * (target_best_score[sentid] - get<2>(traindata[sentid][system_best_id2]));
 				if(system_best_score - system_best_score2 < mergin)
 				{
-					update_weights(traindata[j][target_best_id[j]], traindata[j][system_best_id2], iter_total, eta);
+					update_weights(traindata[sentid][target_best_id[sentid]], traindata[sentid][system_best_id2], iter_total, eta);
 				}
 			}
 			else
 			{
 				// system output != target output
-				update_weights(traindata[j][target_best_id[j]], traindata[j][system_best_id], iter_total, eta);
+				update_weights(traindata[sentid][target_best_id[sentid]], traindata[sentid][system_best_id], iter_total, eta);
 			}
-			
+
 			// regularize
 			if(model->length_weight >= eta)
 				model->length_weight -= eta;
