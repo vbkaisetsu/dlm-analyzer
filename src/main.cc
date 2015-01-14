@@ -16,8 +16,8 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DiscerTrainer.h"
-#include "DiscerTester.h"
+#include "DiscrimTrainer.h"
+#include "DiscrimTester.h"
 
 #include <iostream>
 
@@ -42,8 +42,8 @@ int main(int argc, char **argv)
 		cerr << "Please specify model file or test file." << endl;
 	}
 
-	DiscerLangModel::Model model(FLAGS_ngramsize);
-	DiscerLangModel::DiscerTrainer trainer(&model);
+	DiscrimLangModel::Model model(FLAGS_ngramsize);
+	DiscrimLangModel::DiscrimTrainer trainer(&model);
 	cerr << "Loading ..." << endl;
 	trainer.load_data(FLAGS_traindata);
 	cerr << "Training ..." << endl;
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	}
 	if(FLAGS_testdata != "")
 	{
-		DiscerLangModel::DiscerTester tester(&model);
+		DiscrimLangModel::DiscrimTester tester(&model);
 		cerr << "Loading test data ..." << endl;
 		tester.load_data(FLAGS_testdata);
 		cerr << "Calcurating score ..." << endl << endl;

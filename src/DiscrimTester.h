@@ -4,10 +4,10 @@
 #include "common.h"
 #include "Model.h"
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 
-class DiscerTester
+class DiscrimTester
 {
 
 private:
@@ -15,7 +15,7 @@ private:
 	std::vector<nbest> testdata;
 
 public:
-	DiscerTester(Model *m);
+	DiscrimTester(Model *m);
 	double calcurate_score(scored_candidate &cand);
 	double calcurate_bad_average(scored_candidate &cand);
 	void load_data(std::string filename);

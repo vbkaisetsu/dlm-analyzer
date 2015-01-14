@@ -1,9 +1,9 @@
 /*
- * DiscerTester.cc
+ * DiscrimTester.cc
  * Copyright (C) Koichi Akabe 2013 <vbkaisetsu@gmail.com>
  */
 
-#include "DiscerTester.h"
+#include "DiscrimTester.h"
 #include "Utils.h"
 
 #include <fstream>
@@ -12,15 +12,15 @@
 
 using namespace std;
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 
-DiscerTester::DiscerTester(Model *m)
+DiscrimTester::DiscrimTester(Model *m)
 {
 	model = m;
 }
 
-double DiscerTester::calcurate_score(scored_candidate &cand)
+double DiscrimTester::calcurate_score(scored_candidate &cand)
 {
 	double score = 0.0;
 	vector<int>::iterator it_ngram_id;
@@ -33,7 +33,7 @@ double DiscerTester::calcurate_score(scored_candidate &cand)
 	return score;
 }
 
-double DiscerTester::calcurate_bad_average(scored_candidate &cand)
+double DiscrimTester::calcurate_bad_average(scored_candidate &cand)
 {
 	double score = 0.0;
 	vector<int>::iterator it_ngram_id;
@@ -49,7 +49,7 @@ double DiscerTester::calcurate_bad_average(scored_candidate &cand)
 	return score;
 }
 
-void DiscerTester::load_data(string filename)
+void DiscrimTester::load_data(string filename)
 {
 	/*
 	 *  Args:
@@ -105,7 +105,7 @@ void DiscerTester::load_data(string filename)
 	}
 }
 
-double DiscerTester::eval()
+double DiscrimTester::eval()
 {
 	vector<nbest>::iterator it_nbest;
 	double eval_sum = 0.0;
@@ -128,7 +128,7 @@ double DiscerTester::eval()
 	return eval_sum / testdata.size();
 }
 
-double DiscerTester::eval_no_model()
+double DiscrimTester::eval_no_model()
 {
 	vector<nbest>::iterator it_nbest;
 	double eval_sum = 0.0;
@@ -151,7 +151,7 @@ double DiscerTester::eval_no_model()
 	return eval_sum / testdata.size();
 }
 
-vector<double> DiscerTester::get_onebest_bad_averages()
+vector<double> DiscrimTester::get_onebest_bad_averages()
 {
 	vector<double> result;
 	vector<nbest>::iterator it_nbest;

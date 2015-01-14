@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 
 Model::Model(int ngram_size)

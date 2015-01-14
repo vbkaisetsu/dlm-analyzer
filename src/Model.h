@@ -5,7 +5,7 @@
 
 #include <unordered_map>
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 
 class Model

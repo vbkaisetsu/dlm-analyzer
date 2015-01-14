@@ -11,7 +11,7 @@
 typedef std::tuple<std::vector<int>, double, double, double> scored_candidate;
 typedef std::vector<scored_candidate> nbest;
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 	struct Ngram
 	{

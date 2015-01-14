@@ -4,10 +4,10 @@
 #include "common.h"
 #include "Model.h"
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 
-class DiscerTrainer
+class DiscrimTrainer
 {
 
 private:
@@ -19,7 +19,7 @@ private:
 public:
 	std::vector<nbest> traindata;
 
-	DiscerTrainer(Model *m);
+	DiscrimTrainer(Model *m);
 	void regularizeL1(int id, int iter, double eta);
 	void regularizeL2(int id, int iter, double eta);
 	double calcurate_score(scored_candidate &cand, int iter, double eta);

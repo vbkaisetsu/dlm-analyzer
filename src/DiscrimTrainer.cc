@@ -1,9 +1,9 @@
 /*
- * DiscerTrainer.cc
+ * DiscrimTrainer.cc
  * Copyright (C) Koichi Akabe 2013 <vbkaisetsu@gmail.com>
  */
 
-#include "DiscerTrainer.h"
+#include "DiscrimTrainer.h"
 #include "Utils.h"
 
 #include <fstream>
@@ -12,10 +12,10 @@
 
 using namespace std;
 
-namespace DiscerLangModel
+namespace DiscrimLangModel
 {
 
-DiscerTrainer::DiscerTrainer(Model *m)
+DiscrimTrainer::DiscrimTrainer(Model *m)
 {
 	model = m;
 }
@@ -38,7 +38,7 @@ double pow_int(double x, unsigned int n)
 	return result;
 }
 
-void DiscerTrainer::regularizeL1(int id, int iter, double eta)
+void DiscrimTrainer::regularizeL1(int id, int iter, double eta)
 {
 	double c = eta * (iter - ngram_last_update[id]);
 	if(model->ngram_weight[id] >= c)
@@ -50,7 +50,7 @@ void DiscerTrainer::regularizeL1(int id, int iter, double eta)
 	ngram_last_update[id] = iter;
 }
 
-void DiscerTrainer::regularizeL2(int id, int iter, double eta)
+void DiscrimTrainer::regularizeL2(int id, int iter, double eta)
 {
 	// w_{n+1} <- w_n - w_n * eta
 	// w_{n+m} <- w_n * (1 - eta) ^ m
@@ -58,7 +58,7 @@ void DiscerTrainer::regularizeL2(int id, int iter, double eta)
 	ngram_last_update[id] = iter;
 }
 
-double DiscerTrainer::calcurate_score(scored_candidate &cand, int iter, double eta)
+double DiscrimTrainer::calcurate_score(scored_candidate &cand, int iter, double eta)
 {
 	double score = 0.0;
 	vector<int>::iterator it_ngram_id;
@@ -71,7 +71,7 @@ double DiscerTrainer::calcurate_score(scored_candidate &cand, int iter, double e
 	return score;
 }
 
-void DiscerTrainer::update_weights(scored_candidate &target, scored_candidate &cand, int iter, double eta)
+void DiscrimTrainer::update_weights(scored_candidate &target, scored_candidate &cand, int iter, double eta)
 {
 	vector<int>::iterator it_ngram_id;
 	for(it_ngram_id = get<0>(target).begin(); it_ngram_id != get<0>(target).end(); ++it_ngram_id)
@@ -88,7 +88,7 @@ void DiscerTrainer::update_weights(scored_candidate &target, scored_candidate &c
 	model->length_weight += get<1>(target) - get<1>(cand);
 }
 
-void DiscerTrainer::load_data(string filename)
+void DiscrimTrainer::load_data(string filename)
 {
 	/*
 	 *  Args:
@@ -153,7 +153,7 @@ void DiscerTrainer::load_data(string filename)
 	}
 }
 
-void DiscerTrainer::train(unsigned int iter, double merginlevel, double eta)
+void DiscrimTrainer::train(unsigned int iter, double merginlevel, double eta)
 {
 	/*
 	 * train weights using structured perceptron
